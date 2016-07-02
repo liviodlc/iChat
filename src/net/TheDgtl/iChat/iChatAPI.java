@@ -23,6 +23,7 @@ import com.platymuus.bukkit.permissions.Group;
 import de.bananaco.bpermissions.api.ApiLayer;
 import de.bananaco.bpermissions.api.util.CalculableType;
 
+@SuppressWarnings("deprecation")
 public class iChatAPI {
 	private iChat ichat;
 	
@@ -164,9 +165,6 @@ public class iChatAPI {
     		if (ichat.gMan != null) {
     			return getGManGroup(player);
     		}
-    		if (ichat.permissions != null) {
-    			return getPermissionsGroup(player);
-    		}
     		if (ichat.priv != null) {
     			return getPrivilegesGroup(player);
     		}
@@ -208,10 +206,10 @@ public class iChatAPI {
 	 * Return a health bar string.
 	 */
 	public String healthBar(Player player) {
-		float maxHealth = 20;
-		float barLength = 10;
-		float health = player.getHealth();
-		int fill = Math.round( (health / maxHealth) * barLength );
+		double maxHealth = 20;
+		double barLength = 10;
+		double health = player.getHealth();
+		int fill = (int) Math.round( (health / maxHealth) * barLength );
 		String barColor = "&2";
 		// 0-40: Red  40-70: Yellow  70-100: Green
 		if (fill <= 4) barColor = "&4";
@@ -233,12 +231,8 @@ public class iChatAPI {
     }
     
     public Boolean checkPermissions(Player player, String node) {
-    	// Permissions
-        if (ichat.permissions != null) {
-            if (ichat.permissions.has(player, node))
-                return true;
-        // SuperPerms
-        } else if (player.hasPermission(node)) {
+    	// SuperPerms
+        if (player.hasPermission(node)) {
               return true;
         // Op Fallback
         } else if (player.isOp()) {
@@ -296,31 +290,6 @@ public class iChatAPI {
     		}
     	}
     	return "";
-    }
-    
-    /*
-     * Permissions Stuff
-     */
-    @SuppressWarnings("deprecation")
-    private String getPermissionsGroup(Player player) {
-        String pName = player.getName();
-        String world = player.getWorld().getName();
-
-        if (ichat.permissions3) {
-            String group = ichat.permissions.getPrimaryGroup(world, pName);
-
-            if (group == null)
-                return "";
-
-            return group;
-        } else {
-            String group = ichat.permissions.getGroup(world, pName);
-
-            if (group == null)
-                return "";
-
-            return group;
-        }
     }
     
     /*
